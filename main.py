@@ -1,67 +1,42 @@
 from mongoDatabase import MongoDatabase
 from mysqlDatabase import MysqlDatabase
-
-# Códigos ANSI para cores
-RED = '\033[31m'
-GREEN = '\033[32m'
-YELLOW = '\033[33m'
-BLUE = '\033[34m'
-GRAY = '\033[90m'
-PINK = '\033[35m'
-PURPLE = '\033[35m'  # Para roxo, utilizamos o magenta
-GOLD = '\033[33m'
-BLACK = '\033[30m'
-RESET = '\033[0m'  # Reseta a cor para a cor padrão
+from colors import Colors
 
 print("---------------------------------------------------------------------------------------------------------------")
 print(f"| Olá, seja bem-vindo ao REPORTS DB, seu facilitador de Relatórios para Banco de Dados, como posso te ajudar? |")
 print("---------------------------------------------------------------------------------------------------------------")
-print(f"1 - {GREEN}Gostaria de gerar relatórios para o MONGODB{RESET}")
-print(f"2 - {BLUE}Gostaria de gerar relatórios para o MYSQL{RESET}")
-print(f"3 - {PINK}Gostaria de entender os recursos da aplicação{RESET}")
+print(f"1 - {Colors.GREEN}Gostaria de extrair dados do MONGODB.{Colors.RESET}")
+print(f"2 - {Colors.BLUE}Gostaria de extrair dados do MYSQL.{Colors.RESET}")
+print(f"3 - {Colors.PINK}Gostaria de entender os recursos da aplicação.{Colors.RESET}\n")
 
-escolha = int(input())
+# Escolha
+choice = input("Digite a opção desejada: ")
 
-print(f"{GOLD}**Obs: Tenha em vista as permissões de firewall e acessos por meio de Host externos dentro do seu Servidor**")
-print(f"**isso pode ocasionar possiveis erros!**{RESET}")
 
-print("")
+print(f"\n{Colors.GOLD}**Obs: Tenha em vista as permissões de firewall e acessos por meio de Host externos dentro do servidor do banco de dados fornecido!**")
+print(f"**ISSO PODE OCASIONAR POSSIVEIS ERROS!**{Colors.RESET}\n")
 
-if escolha == 1:
+if choice == "1":
 
-    print(f"{GREEN}MONGODB selecionado!{RESET}")
+    print(f"{Colors.GREEN}MONGODB selecionado!{Colors.RESET}\n")
     
-    print("")
-    print("Me informe aqui a uri de acesso do seu banco MONGODB")
-    uri = input()
+    uri = input("Me informe aqui a uri de acesso do seu banco MONGODB: ")
 
-    print("")
-    print("Me informe também o database a ser acessado")
-    database = input()
+    database = input("\nMe informe também o database: ")
 
-    print("")
-    print("E a collection que deseja acessar")
-    collection = input()
+    collection = input("\nE a collection que deseja extrair os dados: ")
 
-    print("")
-    print(f"{GOLD}Aguarde um minuto estamos realizando a conexão...{RESET}")
-    mongo = MongoDatabase(uri, database, collection)
+    print(f"\n{Colors.GOLD}Aguarde um minuto estamos estabelecendo a conexão...{Colors.RESET}\n")
 
-    print("")
-    print(f"O que você deseja encontrar?")
-    print(f"1 - {GREEN}Todos os dados desta tabela{RESET}")
-    print(f"2 - {GREEN}O primeiro dado desta tabela{RESET}")
-    print(f"3 - {GREEN}Todos os dados de um espaço de datas{RESET}")
+    connection = MongoDatabase(uri, database, collection)
+    connection.init()
 
-    busca = "busca_" + input()
-    metodo = getattr(mongo, busca, "Opção inválida")
-
-    print(f"{YELLOW}Fazendo a busca... Aguarde um instante{RESET}")
-    print(metodo())
-
-if escolha == 2:
+elif choice == "2":
     print("MYSQL selecionado!")
-    print(f"{RED}**Atente-se a veracidade do Host, User, Password e Database!**{RESET}")
+    print(f"{Colors.RED}**Atente-se a veracidade do Host, User, Password e Database!**{Colors.RESET}")
 
-if escolha == 3:
+elif choice == "3":
     print("SOBRE O SITEMA")
+
+else:
+    print("Opcção inválida")
