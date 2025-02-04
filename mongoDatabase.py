@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from datetime import datetime, timedelta
+from datetime import datetime
 from colors import Colors
 from reports import generate_excel
 import time
@@ -34,6 +34,7 @@ class MongoDatabase:
                 time.sleep(1)
                 print(f"{Colors.GREEN}Conexão estabelecida!{Colors.RESET}")
                 time.sleep(1)
+                self.value = True
             else:
                 time.sleep(1)
                 raise ValueError("Nenhum documento encontrado na coleção. Cancelando operação! Valide a tabela inserida e tente novamente!")
@@ -41,23 +42,23 @@ class MongoDatabase:
         except ConnectionError as e:
             print(f"{Colors.RED}Erro ao conectar ao MongoDB:{Colors.RESET}", str(e))
             time.sleep(1)
-            sys.exit()
+            self.value = None
 
         except Exception as e:
             print(f"{Colors.RED}Erro:{Colors.RESET}", f"{Colors.RED}{str(e)}{Colors.RESET}")
             time.sleep(1)
-            sys.exit()
+            self.value = None
 
 
 
 
 
-    def init (self):
+    def start (self):
 
-        print(f"\nO que você deseja encontrar?")
-        print(f"1 - {Colors.GREEN}Dado especifíco, por meio de um indíce.{Colors.RESET}")
-        print(f"2 - {Colors.GREEN}Todos os dados em um espaço de datas.{Colors.RESET}")
-        print(f"3 - {Colors.GREEN}Quantidade de itens nessa tabela.{Colors.RESET}\n")
+        print(f"{Colors.GREEN}\nO que você deseja encontrar?{Colors.RESET}")
+        print(f"1 - Dado especifíco, por meio de um indíce.")
+        print(f"2 - Todos os dados em um espaço de datas.")
+        print(f"3 - Quantidade de itens nessa tabela.\n")
 
         metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados" }
 
@@ -66,26 +67,57 @@ class MongoDatabase:
         option = metodos[op]
         metodo = getattr(self, option, None)
 
-        if option == "busca_dado_especifico":
+        if option == "busca_dado_especifico": # busca_dado_especifico
             indice = input("\nDigite o indíce: ")
             valor = input("\nDigite o valor a ser encontrado: ")
 
             print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
             document = metodo(indice, valor)
 
-            print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", document, "\n")
+            if document:
 
-            print("Deseja extrair relatório?")
-            print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
-            print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-            
-            extract = input("Digite aqui: ")
+                print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", document, "\n")
 
-            if extract == "1":
-                self.extract_reports([document])
+                print("Deseja extrair relatório?")
+                print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
+                print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
+                
+                extract = input("Digite aqui: ")
+
+                if extract == "1":
+                    self.extract_reports([document])
+                else:
+                    print('\nOperação finalizada!')
+
             else:
-                print('\nOperação finalizada!')
+                print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
 
+
+        if option == "busca_todos_dados_data_especifica": # busca_todos_dados_data_especifica
+            start = input("\nDigite a data inicial (Ex: YYYY-MM-DD): ")
+            end = input("\nDigite a data final (Ex: YYYY-MM-DD): ")
+
+            # Converter para datetime
+            date_start = datetime.strptime(start, "%Y-%m-%d")
+            date_end = datetime.strptime(end, "%Y-%m-%d")
+
+            documents = metodo(date_start, date_end)
+
+            if documents:
+
+                print("\nDeseja extrair relatório?")
+                print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
+                print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
+                
+                extract = input("Digite aqui: ")
+
+                if extract == "1":
+                    self.extract_reports(documents)
+                else:
+                    print('\nOperação finalizada!')
+
+            else:
+                print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
 
 
 
@@ -101,8 +133,24 @@ class MongoDatabase:
             return None
         
 
-    def busca_todos_dados_data_especifica(self):
-        return "escolha 2"
+    def busca_todos_dados_data_especifica(self, start, end):
+        documents = self.collection.find({
+            "created_at": {
+                "$gte": start,
+                "$lte": end
+            }
+        })
+        if documents:
+            total = self.collection.count_documents({
+                "created_at": {
+                    "$gte": start,
+                    "$lte": end
+                }
+            })
+            print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {total} documentos\n")
+            return documents
+        else:
+            return None
 
 
     def quantidade_dados(self):

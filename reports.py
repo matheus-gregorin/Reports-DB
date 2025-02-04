@@ -1,4 +1,5 @@
 from openpyxl import Workbook
+from datetime import datetime
 from colors import Colors
 
 # Criar uma planilha Excel
@@ -30,16 +31,24 @@ def generate_excel(documents):
                 # Elimina a inserção do _id
                 if header != "_id":
 
+                    # Tratamento do created_at
+                    if header == "created_at" and isinstance(value, datetime):
+                        value = value.strftime("%Y-%m-%d %H:%M:%S")
+
+                    # Tratamento do updated_at
+                    if header == "updated_at" and isinstance(value, datetime):
+                        value = value.strftime("%Y-%m-%d %H:%M:%S")
+
                     # Se for array ou dicionário, converte para str
                     if isinstance(value, (list, dict)):
-                        values.append(str(value))
-                    else:
-                        values.append(value)
+                        value = str(value)
+                    
+                    values.append(value)
 
 
             # Adiciona linha a planilha
             sheet.append(values)
 
-            name = input(f"{Colors.BLUE}Qual o nome do arquivo? {Colors.RESET}")
-            workbook.save(f"{name}.xlsx")
-            print(f"Finalizado! Planilha salva como: {name}.xlsx")
+        name = input(f"{Colors.BLUE}Qual o nome do arquivo? {Colors.RESET}\n")
+        workbook.save(f"planilhas/{name}.xlsx")
+        print(f"{Colors.YELLOW}Finalizado! Planilha salva em: planilhas/{name}.xlsx{Colors.RESET}")
