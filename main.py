@@ -16,7 +16,7 @@ while start:
     # opção
     choice = input("Digite a opção desejada: ")
 
-    if choice != "4":
+    if choice != "4" and choice != "3":
         print(f"\n{Colors.GOLD}**Obs: Tenha em vista as permissões de firewall e acessos por meio de Host externos dentro do servidor do banco de dados fornecido!**")
         print(f"**ISSO PODE OCASIONAR POSSIVEIS ERROS!**{Colors.RESET}\n")
 
@@ -33,7 +33,17 @@ while start:
             connection.start()
 
     elif choice == "2":
-        print("MYSQL selecionado!")
+        print(f"{Colors.BLUE}MYSQL selecionado!{Colors.RESET}\n")
+
+        host = input("Me informe aqui o host de acesso do seu banco MYSQL: ")
+        database = input("\nMe informe também o database: ")
+        user = input("\nO user: ")
+        password = input("\nE o password: ")
+
+        print(f"\n{Colors.GOLD}Aguarde um minuto estamos estabelecendo a conexão...{Colors.RESET}\n")
+        connection = MysqlDatabase(host, user, password, database)
+        if connection.value is not None:
+            connection.start()
 
     elif choice == "3":
         print("SOBRE O SITEMA")

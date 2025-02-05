@@ -8,13 +8,15 @@ workbook = Workbook()
 # Criar uma sheet
 sheet = workbook.active
 
-def generate_excel(documents):
+def generate_excel(documents, isMongoDB = False):
         print(f"{Colors.GOLD}Modularizando o arquivo.. {Colors.RESET}\n")
 
         for indice, document in enumerate(documents):
             # Transforma o Dic de keys em uma lista
             headers = list(document.keys())
-            headers.remove('_id')
+
+            if isMongoDB:
+                 headers.remove('_id')                 
 
             # Se for o primeiro item da lista, insere o cabeçalho
             if indice == 0:
@@ -49,4 +51,4 @@ def generate_excel(documents):
 
         name = input(f"{Colors.BLUE}Qual o nome do arquivo? {Colors.RESET}\n")
         workbook.save(f"planilhas/{name}.xlsx")
-        print(f"{Colors.YELLOW}Finalizado! Planilha salva em: planilhas/{name}.xlsx{Colors.RESET}")
+        print(f"\n{Colors.YELLOW}Finalizado! Planilha salva em: planilhas/{name}.xlsx{Colors.RESET}")

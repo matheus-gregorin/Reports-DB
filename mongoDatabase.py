@@ -32,7 +32,7 @@ class MongoDatabase:
                 time.sleep(1)
                 print(f"{Colors.GREEN}Collection ok!{Colors.RESET} {collection.name}")
                 time.sleep(1)
-                print(f"{Colors.GREEN}Conexão estabelecida!{Colors.RESET}")
+                print(f"{Colors.GREEN}Conexão estabelecida com MongoDb!{Colors.RESET}")
                 time.sleep(1)
                 self.value = True
             else:
@@ -40,7 +40,7 @@ class MongoDatabase:
                 raise ValueError("Nenhum documento encontrado na coleção. Cancelando operação! Valide o database e a tabela inserida e tente novamente!")
 
         except ConnectionError as e:
-            print(f"{Colors.RED}Erro ao conectar ao MongoDB:{Colors.RESET}", str(e))
+            print(f"{Colors.RED}Erro ao conectar ao MongoDB:{Colors.RESET}", f"{Colors.RED}{str(e)}{Colors.RESET}")
             time.sleep(1)
             self.value = None
 
@@ -55,6 +55,8 @@ class MongoDatabase:
         print(f"1 - Dado especifíco, por meio de um indíce.")
         print(f"2 - Todos os dados em um espaço de datas.")
         print(f"3 - Quantidade de itens nessa tabela.\n")
+
+        print(f"{Colors.YELLOW}**Necessário que a data de criação dos dados esteja como CREATED_AT para que seja feita a conversão de forma correta**\n")
 
         metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados" }
         op = int(input("Digite a opção desejada: "))
@@ -151,4 +153,4 @@ class MongoDatabase:
     
     def extract_reports(self, documents):
         print(f"\n{Colors.GREEN}Gerando a planilha EXCEL!{Colors.RESET}\n")
-        generate_excel(documents)
+        generate_excel(documents, True)
