@@ -78,7 +78,7 @@ class MysqlDatabase:
             date_start = datetime.strptime(start, "%Y-%m-%d")
             date_end = datetime.strptime(end, "%Y-%m-%d")
 
-            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}")
+            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
             documents = metodo(tabela, date_start, date_end) # Usando o def busca_todos_dados_data_especifica(tabela, start, end)
 
             if documents:
