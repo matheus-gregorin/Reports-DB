@@ -37,7 +37,7 @@ class MongoDatabase:
                 self.value = True
             else:
                 time.sleep(1)
-                raise ValueError("Nenhum documento encontrado na coleção. Cancelando operação! Valide a tabela inserida e tente novamente!")
+                raise ValueError("Nenhum documento encontrado na coleção. Cancelando operação! Valide o database e a tabela inserida e tente novamente!")
 
         except ConnectionError as e:
             print(f"{Colors.RED}Erro ao conectar ao MongoDB:{Colors.RESET}", str(e))
@@ -49,10 +49,6 @@ class MongoDatabase:
             time.sleep(1)
             self.value = None
 
-
-
-
-
     def start (self):
 
         print(f"{Colors.GREEN}\nO que você deseja encontrar?{Colors.RESET}")
@@ -61,9 +57,7 @@ class MongoDatabase:
         print(f"3 - Quantidade de itens nessa tabela.\n")
 
         metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados" }
-
         op = int(input("Digite a opção desejada: "))
-
         option = metodos[op]
         metodo = getattr(self, option, None)
 
@@ -72,16 +66,14 @@ class MongoDatabase:
             valor = input("\nDigite o valor a ser encontrado: ")
 
             print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-            document = metodo(indice, valor)
+            document = metodo(indice, valor) # Usando o def busca_dado_especifico(self, index, value)
 
             if document:
-
                 print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", document, "\n")
 
                 print("Deseja extrair relatório?")
                 print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
                 print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-                
                 extract = input("Digite aqui: ")
 
                 if extract == "1":
@@ -101,14 +93,13 @@ class MongoDatabase:
             date_start = datetime.strptime(start, "%Y-%m-%d")
             date_end = datetime.strptime(end, "%Y-%m-%d")
 
-            documents = metodo(date_start, date_end)
+            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}")
+            documents = metodo(date_start, date_end) # Usando o def busca_todos_dados_data_especifica(start, end)
 
             if documents:
-
                 print("\nDeseja extrair relatório?")
                 print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
                 print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-                
                 extract = input("Digite aqui: ")
 
                 if extract == "1":
@@ -119,8 +110,15 @@ class MongoDatabase:
             else:
                 print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
 
+        if option == "quantidade_dados": # quantidade_dados
 
+            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
+            total = metodo()
 
+            if total:
+                print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {documents} documentos\n")
+            else:
+                print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
 
 
     def busca_dado_especifico(self, index, value):
@@ -131,7 +129,6 @@ class MongoDatabase:
             return document
         else:
             return None
-        
 
     def busca_todos_dados_data_especifica(self, start, end):
         documents = self.collection.find({
@@ -141,20 +138,16 @@ class MongoDatabase:
             }
         })
         if documents:
-            total = self.collection.count_documents({
-                "created_at": {
-                    "$gte": start,
-                    "$lte": end
-                }
-            })
-            print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {total} documentos\n")
             return documents
         else:
             return None
 
-
     def quantidade_dados(self):
-        return "escolha 3"
+            documents = self.collection.count_documents({})
+            if documents:
+                return documents
+            else:
+                return None
     
     def extract_reports(self, documents):
         print(f"\n{Colors.GREEN}Gerando a planilha EXCEL!{Colors.RESET}\n")

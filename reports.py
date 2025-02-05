@@ -9,16 +9,14 @@ workbook = Workbook()
 sheet = workbook.active
 
 def generate_excel(documents):
-
         print(f"{Colors.GOLD}Modularizando o arquivo.. {Colors.RESET}\n")
 
         for indice, document in enumerate(documents):
-
             # Transforma o Dic de keys em uma lista
             headers = list(document.keys())
             headers.remove('_id')
 
-            # Se fr o primeiro item da lista, insere o cabeçalho
+            # Se for o primeiro item da lista, insere o cabeçalho
             if indice == 0:
                 sheet.append(headers)
             
