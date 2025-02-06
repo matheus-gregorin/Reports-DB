@@ -3,7 +3,6 @@ from mysqlDatabase import MysqlDatabase
 from colors import Colors
 
 start = True
-
 while start:
     print(f"{Colors.GOLD}\n---------------------------------------------------------------------------------------------------------------{Colors.RESET}")
     print(f"{Colors.PINK}| Olá, seja bem-vindo ao REPORTS DB, seu facilitador de Relatórios para Banco de Dados, como posso te ajudar? |{Colors.RESET}")
@@ -36,12 +35,13 @@ while start:
         print(f"{Colors.BLUE}MYSQL selecionado!{Colors.RESET}\n")
 
         host = input("Me informe aqui o host de acesso do seu banco MYSQL: ")
-        database = input("\nMe informe também o database: ")
         user = input("\nO user: ")
         password = input("\nE o password: ")
+        database = input("\nMe informe também o database: ")
+        table = input("\nMe informe também a tabela: ")
 
         print(f"\n{Colors.GOLD}Aguarde um minuto estamos estabelecendo a conexão...{Colors.RESET}\n")
-        connection = MysqlDatabase(host, user, password, database)
+        connection = MysqlDatabase(host, user, password, database, table)
         if connection.value is not None:
             connection.start()
 

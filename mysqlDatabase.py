@@ -5,7 +5,7 @@ from reports import generate_excel
 import time
 
 class MysqlDatabase:
-    def __init__(self, host, user, password, database):
+    def __init__(self, host, user, password, database, table):
         # Conectar ao banco de dados
         try:
             connection = mysql.connector.connect(
@@ -18,8 +18,19 @@ class MysqlDatabase:
 
             if connection.is_connected():
                 time.sleep(1)
-                print(f"{Colors.BLUE}Conexão estabelecida com Mysql!{Colors.RESET}")
-                self.value = True
+
+                cursor = self.connection.cursor()
+                cursor.execute(f"SELECT * FROM {table}")
+
+                documents = cursor.fetchall()
+                if documents:
+                    print(f"{Colors.BLUE}Conexão estabelecida com Mysql!{Colors.RESET}")
+                    self.table = table
+                    time.sleep(1)
+                    self.value = True
+                else:
+                    time.sleep(1)
+                    raise ValueError("Nenhum documento encontrado na coleção. Cancelando operação! Valide o database e a tabela inserida e tente novamente!")
 
             else:
                 time.sleep(1)
@@ -28,134 +39,154 @@ class MysqlDatabase:
         except mysql.connector.Error as err:
             print(f"{Colors.RED}Erro ao conectar:{Colors.RESET} {err}\n")
             connection.close()
-            self.value = False
+            self.value = None
             print(f"{Colors.YELLOW}Conexão encerrada.{Colors.RESET}")
+        
+        except Exception as e:
+            print(f"{Colors.RED}Erro:{Colors.RESET}", f"{Colors.RED}{str(e)}{Colors.RESET}")
+            time.sleep(1)
+            self.value = None
 
     def start(self):
-        
-        print(f"{Colors.BLUE}\nO que você deseja encontrar?{Colors.RESET}")
-        print(f"1 - Dado especifíco, por meio de um indíce de uma tabela.")
-        print(f"2 - Todos os dados em um espaço de datas.")
-        print(f"3 - Quantidade de itens nessa tabela.\n")
 
-        print(f"{Colors.YELLOW}**Necessário que a data de criação dos dados esteja como CREATED_AT para que seja feita a conversão de forma correta**{Colors.RESET}\n")
+        start = True
+        while start:
+            print(f"{Colors.BLUE}\nO que você deseja encontrar?{Colors.RESET}")
+            print(f"1 - Dado especifíco, por meio de um indíce de uma tabela.")
+            print(f"2 - Todos os dados em um espaço de datas.")
+            print(f"3 - Quantidade de itens nessa tabela.")
+            print(f"4 - Sair.\n")
 
-        metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados" }
-        op = int(input("Digite a opção desejada: "))
-        option = metodos[op]
-        metodo = getattr(self, option, None)
+            metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados", 4: "sair" }
+            op = int(input("Digite a opção desejada: "))
+            option = metodos[op]
+            metodo = getattr(self, option, None)
 
-        if option == "busca_dado_especifico": # busca_dado_especifico
-            tabela = input("\nDigite a tabela: ")
-            indice = input("\nDigite o indíce: ")
-            valor = input("\nDigite o valor a ser encontrado: ")
+            if op != 3 and op != 4:
+                print(f"{Colors.YELLOW}**Necessário que a data de criação dos dados esteja como CREATED_AT para que seja feita a conversão de forma correta**{Colors.RESET}\n")
 
-            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-            document = metodo(tabela, indice, valor) # Usando o def busca_dado_especifico(self, index, value)
+            if option == "busca_dado_especifico": # busca_dado_especifico
+                indice = input("\nDigite o indíce: ")
+                valor = input("\nDigite o valor a ser encontrado: ")
 
-            if document:
-                print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", document, "\n")
+                print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
+                document = metodo(indice, valor) # Usando o def busca_dado_especifico(self, index, value)
 
-                print("Deseja extrair relatório?")
-                print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
-                print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-                extract = input("Digite aqui: ")
+                if document:
+                    print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", document, "\n")
 
-                if extract == "1":
-                    self.extract_reports(document)
+                    print("Deseja extrair relatório?")
+                    print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
+                    print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
+                    extract = input("Digite aqui: ")
+
+                    if extract == "1":
+                        self.extract_reports(document)
+                    else:
+                        print('\nOperação finalizada!')
+
                 else:
-                    print('\nOperação finalizada!')
+                    print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
+            
+            if option == "busca_todos_dados_data_especifica": # busca_todos_dados_data_especifica
+                start = input("\nDigite a data inicial (Ex: YYYY-MM-DD): ")
+                end = input("\nDigite a data final (Ex: YYYY-MM-DD): ")
 
+                # Converter para datetime
+                date_start = datetime.strptime(start, "%Y-%m-%d")
+                date_end = datetime.strptime(end, "%Y-%m-%d")
+
+                print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
+                documents = metodo(date_start, date_end) # Usando o def busca_todos_dados_data_especifica(tabela, start, end)
+
+                if documents:
+                    print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", documents, "\n")
+
+                    print("\nDeseja extrair relatório?")
+                    print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
+                    print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
+                    extract = input("Digite aqui: ")
+
+                    if extract == "1":
+                        self.extract_reports(documents)
+                    else:
+                        print('\nOperação finalizada!')
+
+                else:
+                    print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
+
+            if option == "quantidade_dados": # quantidade_dados
+
+                print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
+                total = metodo()
+                if total:
+                    print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {total} documentos\n")
+                else:
+                    print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
+
+            if option == "sair":
+                print(f"\n{Colors.YELLOW}Retornando ao menu principal{Colors.RESET}\n")
+                start = False
+
+    def busca_dado_especifico(self, index, value):
+        try:
+            cursor = self.connection.cursor()
+
+            cursor.execute(f"SELECT * FROM {self.table} WHERE {index} = '{value}'")
+
+            # Obter os nomes das colunas
+            colunas = [desc[0] for desc in cursor.description]
+
+            # Criar um array para armazenar os resultados como JSON | Aqui ela já retorna encapsulado em um array
+            document = [dict(zip(colunas, row)) for row in cursor.fetchall()]
+            if document:
+                return document
             else:
-                print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
-        
-        if option == "busca_todos_dados_data_especifica": # busca_todos_dados_data_especifica
-            tabela = input("\nDigite a tabela: ")
-            start = input("\nDigite a data inicial (Ex: YYYY-MM-DD): ")
-            end = input("\nDigite a data final (Ex: YYYY-MM-DD): ")
+                return None
 
-            # Converter para datetime
-            date_start = datetime.strptime(start, "%Y-%m-%d")
-            date_end = datetime.strptime(end, "%Y-%m-%d")
+        except Exception as e:
+            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
+            return None
 
-            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-            documents = metodo(tabela, date_start, date_end) # Usando o def busca_todos_dados_data_especifica(tabela, start, end)
+    def busca_todos_dados_data_especifica(self, start, end):
+        try:
+            cursor = self.connection.cursor()
+
+            # Query SQL equivalente ao MongoDB
+            query = f"SELECT * FROM {self.table} WHERE created_at BETWEEN %s AND %s"
+
+            # Executar query com parâmetros
+            cursor.execute(query, (start, end))
+
+            # Obter os nomes das colunas
+            colunas = [desc[0] for desc in cursor.description]
+
+            # Criar um array para armazenar os resultados como JSON | Aqui ela já retorna encapsulado em um array
+            documents = [dict(zip(colunas, row)) for row in cursor.fetchall()]
 
             if documents:
-                print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", documents, "\n")
-
-                print("\nDeseja extrair relatório?")
-                print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
-                print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-                extract = input("Digite aqui: ")
-
-                if extract == "1":
-                    self.extract_reports(documents)
-                else:
-                    print('\nOperação finalizada!')
-
+                return documents
             else:
-                print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
-
-        if option == "quantidade_dados": # quantidade_dados
-            tabela = input("\nDigite a tabela: ")
-
-            print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-            total = metodo(tabela)
-
-            if total:
-                print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {total} documentos\n")
-            else:
-                print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
-
-    def busca_dado_especifico(self, tabela, index, value):
-
-        cursor = self.connection.cursor()
-
-        cursor.execute(f"SELECT * FROM {tabela} WHERE {index} = '{value}'")
-
-        # Obter os nomes das colunas
-        colunas = [desc[0] for desc in cursor.description]
-
-        # Criar um array para armazenar os resultados como JSON | Aqui ela já retorna encapsulado em um array
-        document = [dict(zip(colunas, row)) for row in cursor.fetchall()]
-        if document:
-            return document
-        else:
+                return None
+        except Exception as e:
+            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
             return None
 
-    def busca_todos_dados_data_especifica(self, tabela, start, end):
+    def quantidade_dados(self):
+        try:
 
-        cursor = self.connection.cursor()
+            cursor = self.connection.cursor()
 
-        # Query SQL equivalente ao MongoDB
-        query = f"SELECT * FROM {tabela} WHERE created_at BETWEEN %s AND %s"
+            cursor.execute(f"SELECT COUNT(*) FROM {self.table}")
 
-        # Executar query com parâmetros
-        cursor.execute(query, (start, end))
-
-        # Obter os nomes das colunas
-        colunas = [desc[0] for desc in cursor.description]
-
-        # Criar um array para armazenar os resultados como JSON | Aqui ela já retorna encapsulado em um array
-        documents = [dict(zip(colunas, row)) for row in cursor.fetchall()]
-
-        if documents:
-            return documents
-        else:
-            return None
-
-    def quantidade_dados(self, tabela):
-
-        cursor = self.connection.cursor()
-
-        cursor.execute(f"SELECT COUNT(*) FROM {tabela}")
-
-        # Obter o resultado
-        documents = cursor.fetchone()[0]  # A contagem está na primeira posição da tupla
-        if documents:
-            return documents
-        else:
+            # Obter o resultado
+            documents = cursor.fetchone()[0]  # A contagem está na primeira posição da tupla
+            if documents:
+                return documents
+            else:
+                return None
+        except Exception as e:
+            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
             return None
     
     def extract_reports(self, documents):
