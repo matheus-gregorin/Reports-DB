@@ -123,7 +123,7 @@ class MongoDatabase:
                 total = metodo()
 
                 if total:
-                    print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {documents} documentos\n")
+                    print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {total} documentos")
                 else:
                     print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
 

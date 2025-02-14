@@ -2,13 +2,14 @@ from openpyxl import Workbook
 from datetime import datetime
 from colors import Colors
 
-# Criar uma planilha Excel
-workbook = Workbook()
-
-# Criar uma sheet
-sheet = workbook.active
-
 def generate_excel(documents, isMongoDB = False):
+        
+        # Criar uma planilha Excel
+        workbook = Workbook()
+
+        # Criar uma sheet
+        sheet = workbook.active
+
         print(f"{Colors.GOLD}Modularizando o arquivo.. {Colors.RESET}\n")
 
         for indice, document in enumerate(documents):
@@ -51,4 +52,5 @@ def generate_excel(documents, isMongoDB = False):
 
         name = input(f"{Colors.BLUE}Qual o nome do arquivo? {Colors.RESET}\n")
         workbook.save(f"planilhas/{name}.xlsx")
+        workbook.close()
         print(f"\n{Colors.YELLOW}Finalizado! Planilha salva em: planilhas/{name}.xlsx{Colors.RESET}")
