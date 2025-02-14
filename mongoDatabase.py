@@ -132,32 +132,44 @@ class MongoDatabase:
                 start = False
 
     def busca_dado_especifico(self, index, value):
-        document = self.collection.find_one({
-            index: value
-        })
-        if document:
-            return document
-        else:
+        try:
+            document = self.collection.find_one({
+                index: value
+            })
+            if document:
+                return document
+            else:
+                return None
+        except Exception as e:
+            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
             return None
 
     def busca_todos_dados_data_especifica(self, start, end):
-        documents = self.collection.find({
-            "created_at": {
-                "$gte": start,
-                "$lte": end
-            }
-        })
-        if documents:
-            return documents
-        else:
+        try:
+            documents = self.collection.find({
+                "created_at": {
+                    "$gte": start,
+                    "$lte": end
+                }
+            })
+            if documents:
+                return documents
+            else:
+                return None
+        except Exception as e:
+            print(f"{Colors.RED}Erro ao busca todos os dados de uma data especifica: {Colors.RESET}", e, "\n")
             return None
 
     def quantidade_dados(self):
+        try:
             documents = self.collection.count_documents({})
             if documents:
                 return documents
             else:
                 return None
+        except Exception as e:
+            print(f"{Colors.RED}Erro ao buscar quantidade total: {Colors.RESET}", e)
+            return None
     
     def extract_reports(self, documents):
         print(f"\n{Colors.GREEN}Gerando a planilha EXCEL!{Colors.RESET}\n")

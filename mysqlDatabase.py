@@ -8,6 +8,7 @@ class MysqlDatabase:
     def __init__(self, host, user, password, database, table):
         # Conectar ao banco de dados
         try:
+            connection = None
             connection = mysql.connector.connect(
                 host=host,      # Endereço do servidor MySQL
                 user=user,    # Usuário do banco de dados
@@ -38,14 +39,33 @@ class MysqlDatabase:
 
         except mysql.connector.Error as err:
             print(f"{Colors.RED}Erro ao conectar:{Colors.RESET} {err}\n")
-            connection.close()
+            time.sleep(1)
             self.value = None
+
+            if connection:
+                if connection.is_connected():
+                    print(f"{Colors.YELLOW}Conexão aberta.{Colors.RESET}")
+                    time.sleep(1)
+                    connection.close()
+                else:
+                    print(f"{Colors.YELLOW}Conexão fechada.{Colors.RESET}")
+            
             print(f"{Colors.YELLOW}Conexão encerrada.{Colors.RESET}")
         
         except Exception as e:
             print(f"{Colors.RED}Erro:{Colors.RESET}", f"{Colors.RED}{str(e)}{Colors.RESET}")
             time.sleep(1)
             self.value = None
+
+            if connection:
+                if connection.is_connected():
+                    print(f"{Colors.YELLOW}Conexão aberta.{Colors.RESET}")
+                    time.sleep(1)
+                    connection.close()
+                else:
+                    print(f"{Colors.YELLOW}Conexão fechada.{Colors.RESET}")
+            
+            print(f"{Colors.YELLOW}Conexão encerrada.{Colors.RESET}")
 
     def start(self):
 
@@ -55,7 +75,7 @@ class MysqlDatabase:
             print(f"1 - Dado especifíco, por meio de um indíce de uma tabela.")
             print(f"2 - Todos os dados em um espaço de datas.")
             print(f"3 - Quantidade de itens nessa tabela.")
-            print(f"4 - Sair.\n")
+            print(f"4 - Retornar ao menu principal.\n")
 
             metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados", 4: "sair" }
             op = int(input("Digite a opção desejada: "))
@@ -63,7 +83,7 @@ class MysqlDatabase:
             metodo = getattr(self, option, None)
 
             if op != 3 and op != 4:
-                print(f"{Colors.YELLOW}**Necessário que a data de criação dos dados esteja como CREATED_AT para que seja feita a conversão de forma correta**{Colors.RESET}\n")
+                print(f"\n{Colors.YELLOW}**Necessário que a data de criação dos dados exista e esteja como CREATED_AT para que seja feita a busca e a conversão de forma correta**{Colors.RESET}\n")
 
             if option == "busca_dado_especifico": # busca_dado_especifico
                 indice = input("\nDigite o indíce: ")
@@ -99,6 +119,9 @@ class MysqlDatabase:
                 print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
                 documents = metodo(date_start, date_end) # Usando o def busca_todos_dados_data_especifica(tabela, start, end)
 
+                #documents = list(documents)
+                print(f"{Colors.BLUE}Documentos encontrados:{Colors.RESET}", documents, "\n")
+
                 if documents:
                     print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", documents, "\n")
 
@@ -130,6 +153,7 @@ class MysqlDatabase:
 
     def busca_dado_especifico(self, index, value):
         try:
+
             cursor = self.connection.cursor()
 
             cursor.execute(f"SELECT * FROM {self.table} WHERE {index} = '{value}'")
@@ -150,6 +174,7 @@ class MysqlDatabase:
 
     def busca_todos_dados_data_especifica(self, start, end):
         try:
+
             cursor = self.connection.cursor()
 
             # Query SQL equivalente ao MongoDB
@@ -169,7 +194,7 @@ class MysqlDatabase:
             else:
                 return None
         except Exception as e:
-            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
+            print(f"{Colors.RED}Erro ao busca todos os dados de uma data especifica: {Colors.RESET}", e, "\n")
             return None
 
     def quantidade_dados(self):
@@ -186,7 +211,7 @@ class MysqlDatabase:
             else:
                 return None
         except Exception as e:
-            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
+            print(f"{Colors.RED}Erro ao buscar quantidade total: {Colors.RESET}", e)
             return None
     
     def extract_reports(self, documents):
