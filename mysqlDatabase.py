@@ -123,7 +123,6 @@ class MysqlDatabase:
                 print(f"{Colors.BLUE}Documentos encontrados:{Colors.RESET}", documents, "\n")
 
                 if documents:
-                    print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", documents, "\n")
 
                     print("\nDeseja extrair relatório?")
                     print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
