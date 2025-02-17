@@ -14,9 +14,10 @@ Este aplicativo, desenvolvido em **Python**, permite gerar **relatórios em Exce
 ---
 
 ## ⚙️ **Instalação**
-1. Clone o repositório:
+1. Clone o repositório e acesse:
    ```sh
    git clone https://github.com/seu-usuario/Reports-DB.git
+   cd Reports-DB
 2. Crie um ambiente virtual:
     ```sh
     python3 -m venv venv
@@ -24,7 +25,7 @@ Este aplicativo, desenvolvido em **Python**, permite gerar **relatórios em Exce
     pip install -r requirements.txt
 3. Entre na pasta e rode o app:
     ```sh
-    cd Reports-DB/src
+    cd /src
     python3 main.py # Ou python
 4. Para desativar o ambiente virtual, use:
     ```sh
