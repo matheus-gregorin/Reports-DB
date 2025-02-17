@@ -17,12 +17,12 @@ Este aplicativo, desenvolvido em **Python**, permite gerar **relatórios em Exce
 1. Clone o repositório:
    ```sh
    git clone https://github.com/seu-usuario/Reports-DB.git
-   cd Reports-DB
 2. Crie um ambiente virtual:
     ```sh
     python3 -m venv venv
     source venv/bin/activate   # No Windows, use: venv\Scripts\activate
     pip install -r requirements.txt
-3. Rode o app:
+3. Entre na pasta e rode o app:
     ```sh
+    cd Reports-DB/src
     python3 main.py # Ou python
