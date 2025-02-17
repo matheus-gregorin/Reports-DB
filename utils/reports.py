@@ -1,6 +1,7 @@
 from openpyxl import Workbook
 from datetime import datetime
-from colors import Colors
+from utils.colors import Colors
+import time
 
 def generate_excel(documents, isMongoDB = False):
         
@@ -51,6 +52,7 @@ def generate_excel(documents, isMongoDB = False):
             sheet.append(values)
 
         name = input(f"{Colors.BLUE}Qual o nome do arquivo? {Colors.RESET}\n")
-        workbook.save(f"planilhas/{name}.xlsx")
+        time.sleep(1)
+        workbook.save(f"../docs/{name}.xlsx")
         workbook.close()
         print(f"\n{Colors.YELLOW}Finalizado! Planilha salva em: planilhas/{name}.xlsx{Colors.RESET}")

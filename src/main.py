@@ -1,6 +1,9 @@
-from mongoDatabase import MongoDatabase
-from mysqlDatabase import MysqlDatabase
-from colors import Colors
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from databases.mongoDatabase import MongoDatabase
+from databases.mysqlDatabase import MysqlDatabase
+from utils.colors import Colors
 import time
 
 start = True
