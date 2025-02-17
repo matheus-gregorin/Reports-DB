@@ -118,7 +118,6 @@ class MongoDatabase:
 
                 else:
                     print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
-                    return None
 
             if option == "quantidade_dados": # quantidade_dados
 
@@ -133,8 +132,7 @@ class MongoDatabase:
             if option == "sair":
                 print(f"\n{Colors.YELLOW}Retornando ao menu principal{Colors.RESET}")
                 start = False
-
-        self.client.close()
+                self.client.close()
 
     def busca_dado_especifico(self, index, value):
         try:

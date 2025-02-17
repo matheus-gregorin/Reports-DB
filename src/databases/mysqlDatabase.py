@@ -149,8 +149,7 @@ class MysqlDatabase:
             if option == "sair":
                 print(f"\n{Colors.YELLOW}Retornando ao menu principal{Colors.RESET}\n")
                 start = False
-
-        self.connection.close()
+                self.connection.close()
 
     def busca_dado_especifico(self, index, value):
         try:

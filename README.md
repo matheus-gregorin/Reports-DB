@@ -26,3 +26,7 @@ Este aplicativo, desenvolvido em **Python**, permite gerar **relatórios em Exce
     ```sh
     cd Reports-DB/src
     python3 main.py # Ou python
+4. Para desativar o ambiente virtual, use:
+    ```sh
+    deactivate
+
