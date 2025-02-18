@@ -14,7 +14,7 @@ class TesteMongoDatabase(unittest.TestCase):
 
     def setUp(self):
         """Configuração antes de cada teste"""
-        self.uri = "mongodb+srv://user-default-mongodb:project_bot_api@projetbot.bllfmvd.mongodb.net/?retryWrites=true&w=majority&appName=ProjetBot"
+        self.uri = "Uri"
         self.database = "Projeto_bot"
         self.collection = "items"
         self.mongodb = MongoDatabase(self.uri, self.database, self.collection)
