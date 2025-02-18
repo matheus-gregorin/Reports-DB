@@ -15,8 +15,8 @@ class TesteMongoDatabase(unittest.TestCase):
     def setUp(self):
         """Configuração antes de cada teste"""
         self.uri = "Uri"
-        self.database = "Projeto_bot"
-        self.collection = "items"
+        self.database = "database"
+        self.collection = "collection"
         self.mongodb = MongoDatabase(self.uri, self.database, self.collection)
 
     def teste_busca_especifica_retorna_objeto_item_existe(self):
