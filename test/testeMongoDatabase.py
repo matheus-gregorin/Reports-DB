@@ -6,14 +6,17 @@ from src.databases.mongoDatabase import MongoDatabase
 from utils.colors import Colors
 from datetime import datetime
 
+#  Comando:
+#  python -m unittest testeMongoDatabase.py
+
 # Criando a classe de teste
 class TesteMongoDatabase(unittest.TestCase):
 
     def setUp(self):
         """Configuração antes de cada teste"""
-        self.uri = "**INSIRA A URI AQUI**"
-        self.database = "**INSIRA O DATABASE AQUI**"
-        self.collection = "**INSIRA A COLLECTION AQUI**"
+        self.uri = "mongodb+srv://user-default-mongodb:project_bot_api@projetbot.bllfmvd.mongodb.net/?retryWrites=true&w=majority&appName=ProjetBot"
+        self.database = "Projeto_bot"
+        self.collection = "items"
         self.mongodb = MongoDatabase(self.uri, self.database, self.collection)
 
     def teste_busca_especifica_retorna_objeto_item_existe(self):
