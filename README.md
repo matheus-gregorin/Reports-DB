@@ -10,8 +10,19 @@ Este aplicativo, desenvolvido em **Python**, permite gerar **relatórios em Exce
 ✅ **Geração de relatórios otimizada**: Exportação de dados para **Excel** utilizando a biblioteca **openpyxl**.  
 ✅ **Execução estruturada**: O método `start()` organiza e gerencia o fluxo de execução de forma intuitiva.  
 ✅ **Alta eficiência**: Aplicação leve que roda diretamente no terminal, consumindo entre **1,3 MB e 1,6 MB** de memória.  
-✅ **Testes automatizados**: Inclui testes unitários para validação de módulos e métodos, utilizando o **unittest**, uma ferramenta nativa do Python.  
+✅ **Testes automatizados**: Inclui testes unitários para validação de módulos e métodos, utilizando o **unittest**, uma ferramenta nativa do Python.
 
+---
+
+<br>
+
+⚠️ Antes de utilizar o aplicativo, certifique-se de que você possui o **Python 3.12 ou superior** instalado em seu sistema.  
+
+Para verificar a versão instalada, execute o comando:
+
+    python --version
+
+<br>
 
 ## ⚙️ **Instalação**
 1. Clone o repositório:
