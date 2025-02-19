@@ -67,6 +67,3 @@ Para verificar a versão instalada, execute o comando:
 
     # Mysql:
     python -m unittest testeMysqlDatabase.py
-
-
-FIM
