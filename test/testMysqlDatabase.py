@@ -7,7 +7,7 @@ from utils.colors import Colors
 from datetime import datetime
 
 #  Comando:
-#  python -m unittest testeMysqlDatabase.py
+#  python -m unittest testMysqlDatabase.py
 
 # Criando a classe de teste
 class TesteMysqlDatabase(unittest.TestCase):

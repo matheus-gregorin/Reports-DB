@@ -7,7 +7,7 @@ from utils.colors import Colors
 from datetime import datetime
 
 #  Comando:
-#  python -m unittest testeMongoDatabase.py
+#  python -m unittest testMongoDatabase.py
 
 # Criando a classe de teste
 class TesteMongoDatabase(unittest.TestCase):
