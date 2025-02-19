@@ -63,7 +63,7 @@ Para verificar a versão instalada, execute o comando:
 3. Rode o comando respectivo da classe de teste:
     ```sh
     # Mongodb:
-    python -m unittest testeMongoDatabase.py
+    python -m unittest testMongoDatabase.py
 
     # Mysql:
-    python -m unittest testeMysqlDatabase.py
+    python -m unittest testMysqlDatabase.py
