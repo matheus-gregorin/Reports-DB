@@ -25,133 +25,133 @@ class MysqlDatabase:
 
                 documents = cursor.fetchall()
                 if documents:
-                    print(f"{Colors.BLUE}Conexão estabelecida com Mysql!{Colors.RESET}")
+                    print(f"{Colors.BLUE}Connection established with Mysql!{Colors.RESET}")
                     self.table = table
                     time.sleep(1)
                     self.value = True
                 else:
                     time.sleep(1)
-                    raise ValueError("Nenhum documento encontrado na coleção. Cancelando operação! Valide o database e a tabela inserida e tente novamente!")
+                    raise ValueError("No documents found in the collection. Canceling operation! Validate the database and inserted table and try again!")
 
             else:
                 time.sleep(1)
-                raise ValueError("Erro de conexão. Cancelando operação! Valide o database, user e password. Após isso, tente novamente!")
+                raise ValueError("Connection error. Canceling operation! Validate the database, username and password. After that, try again!")
 
         except mysql.connector.Error as err:
-            print(f"{Colors.RED}Erro ao conectar:{Colors.RESET} {err}\n")
+            print(f"{Colors.RED}Error connecting:{Colors.RESET} {err}\n")
             time.sleep(1)
             self.value = None
 
             if connection:
                 if connection.is_connected():
-                    print(f"{Colors.YELLOW}Conexão aberta.{Colors.RESET}")
+                    print(f"{Colors.YELLOW}Connection open.{Colors.RESET}")
                     time.sleep(1)
                     connection.close()
                 else:
-                    print(f"{Colors.YELLOW}Conexão fechada.{Colors.RESET}")
+                    print(f"{Colors.YELLOW}Connection close.{Colors.RESET}")
             
-            print(f"{Colors.YELLOW}Conexão encerrada.{Colors.RESET}")
+            print(f"{Colors.YELLOW}Connection closed.{Colors.RESET}")
         
         except Exception as e:
-            print(f"{Colors.RED}Erro:{Colors.RESET}", f"{Colors.RED}{str(e)}{Colors.RESET}")
+            print(f"{Colors.RED}Error:{Colors.RESET}", f"{Colors.RED}{str(e)}{Colors.RESET}")
             time.sleep(1)
             self.value = None
 
             if connection:
                 if connection.is_connected():
-                    print(f"{Colors.YELLOW}Conexão aberta.{Colors.RESET}")
+                    print(f"{Colors.YELLOW}Connection open.{Colors.RESET}")
                     time.sleep(1)
                     connection.close()
                 else:
-                    print(f"{Colors.YELLOW}Conexão fechada.{Colors.RESET}")
+                    print(f"{Colors.YELLOW}Connection closed.{Colors.RESET}")
             
-            print(f"{Colors.YELLOW}Conexão encerrada.{Colors.RESET}")
+            print(f"{Colors.YELLOW}Connection closed.{Colors.RESET}")
 
     def start(self):
 
         start = True
         while start:
-            print(f"{Colors.BLUE}\nO que você deseja encontrar?{Colors.RESET}")
-            print(f"1 - Dado especifíco, por meio de um indíce de uma tabela.")
-            print(f"2 - Todos os dados em um espaço de datas.")
-            print(f"3 - Quantidade de itens nessa tabela.")
-            print(f"4 - Retornar ao menu principal.\n")
+            print(f"{Colors.BLUE}\nWhat do you want to find?{Colors.RESET}")
+            print(f"1 - Specific data, through a table index.")
+            print(f"2 - All data in a date space.")
+            print(f"3 - Number of items in this table.")
+            print(f"4 - Return to menu.\n")
 
-            metodos = { 1: "busca_dado_especifico", 2: "busca_todos_dados_data_especifica", 3: "quantidade_dados", 4: "sair" }
-            op = int(input("Digite a opção desejada: "))
-            option = metodos[op]
-            metodo = getattr(self, option, None)
+            methods = { 1: "search_specific_data", 2: "search_all_data_specific_data", 3: "quantity_data", 4: "exit" }
+            op = int(input("Enter the desired option: "))
+            option = methods[op]
+            method = getattr(self, option, None)
 
             if op != 3 and op != 4:
-                print(f"\n{Colors.YELLOW}**Necessário que a data de criação dos dados exista e esteja como CREATED_AT para que seja feita a busca e a conversão de forma correta**{Colors.RESET}\n")
+                print(f"\n{Colors.YELLOW}**The data creation date must exist and be as CREATED_AT so that the search and conversion can be carried out correctly**{Colors.RESET}\n")
 
-            if option == "busca_dado_especifico": # busca_dado_especifico
-                indice = input("\nDigite o indíce: ")
-                valor = input("\nDigite o valor a ser encontrado: ")
+            if option == "search_specific_data": # search_specific_data
+                index = input("\nEnter the index: ")
+                value = input("\nEnter the value to be found: ")
 
-                print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-                document = metodo(indice, valor) # Usando o def busca_dado_especifico(self, index, value)
+                print(f"\n{Colors.YELLOW}Performing the search... Please wait a moment{Colors.RESET}\n")
+                document = method(index, value) # Usando o def search_specific_data(self, index, value)
 
                 if document:
-                    print(f"{Colors.BLUE}Documento encontrado: {Colors.RESET}", document, "\n")
+                    print(f"{Colors.BLUE}Document found: {Colors.RESET}", document, "\n")
 
-                    print("Deseja extrair relatório?")
-                    print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
-                    print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-                    extract = input("Digite aqui: ")
+                    print("Do you want to extract report?")
+                    print(f"{Colors.GREEN}1 - Yes{Colors.RESET}")
+                    print(f"{Colors.RED}2 - No{Colors.RESET}\n")
+                    extract = input("Type here: ")
 
                     if extract == "1":
                         self.extract_reports(document)
                     else:
-                        print('\nOperação finalizada!')
+                        print('\nOperation completed!')
 
                 else:
-                    print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
+                    print(f"{Colors.YELLOW}No documents found!{Colors.RESET}")
             
-            if option == "busca_todos_dados_data_especifica": # busca_todos_dados_data_especifica
-                start = input("\nDigite a data inicial (Ex: YYYY-MM-DD): ")
-                end = input("\nDigite a data final (Ex: YYYY-MM-DD): ")
+            if option == "search_all_data_specific_data": # search_all_data_specific_data
+                start = input("\nEnter the start date (Ex: YYYY-MM-DD): ")
+                end = input("\nEnter the final date (Ex: YYYY-MM-DD): ")
 
                 # Converter para datetime
                 date_start = datetime.strptime(start, "%Y-%m-%d")
                 date_end = datetime.strptime(end, "%Y-%m-%d")
 
                 print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-                documents = metodo(date_start, date_end) # Usando o def busca_todos_dados_data_especifica(tabela, start, end)
+                documents = method(date_start, date_end) # Usando o def search_all_data_specific_data(tabela, start, end)
 
                 #documents = list(documents)
-                print(f"{Colors.BLUE}Documentos encontrados:{Colors.RESET}", documents, "\n")
+                print(f"{Colors.BLUE}Documents found:{Colors.RESET}", documents, "\n")
 
                 if documents:
 
-                    print("\nDeseja extrair relatório?")
-                    print(f"{Colors.GREEN}1 - Sim{Colors.RESET}")
-                    print(f"{Colors.RED}2 - Não{Colors.RESET}\n")
-                    extract = input("Digite aqui: ")
+                    print("Do you want to extract report?")
+                    print(f"{Colors.GREEN}1 - Yes{Colors.RESET}")
+                    print(f"{Colors.RED}2 - No{Colors.RESET}\n")
+                    extract = input("Type here: ")
 
                     if extract == "1":
                         self.extract_reports(documents)
                     else:
-                        print('\nOperação finalizada!')
+                        print('\nOperation completed!')
 
                 else:
-                    print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
+                    print(f"{Colors.YELLOW}No documents found!{Colors.RESET}")
 
-            if option == "quantidade_dados": # quantidade_dados
+            if option == "quantity_data": # quantity_data
 
-                print(f"\n{Colors.YELLOW}Fazendo a busca... Aguarde um instante{Colors.RESET}\n")
-                total = metodo()
+                print(f"\n{Colors.YELLOW}Performing the search... Please wait a moment{Colors.RESET}\n")
+                total = method()
                 if total:
-                    print(f"{Colors.BLUE}Encontrado um total de {Colors.RESET} {total} documentos\n")
+                    print(f"{Colors.BLUE}Found a total of {Colors.RESET} {total} documents\n")
                 else:
-                    print(f"{Colors.YELLOW}Nenhum documento encontrado!{Colors.RESET}")
+                    print(f"{Colors.YELLOW}No documents found!{Colors.RESET}")
 
-            if option == "sair":
-                print(f"\n{Colors.YELLOW}Retornando ao menu principal{Colors.RESET}\n")
+            if option == "exit":
+                print(f"\n{Colors.YELLOW}Returning to the main menu{Colors.RESET}\n")
                 start = False
                 self.connection.close()
 
-    def busca_dado_especifico(self, index, value):
+    def search_specific_data(self, index, value):
         try:
 
             cursor = self.connection.cursor()
@@ -169,10 +169,10 @@ class MysqlDatabase:
                 return None
 
         except Exception as e:
-            print(f"{Colors.RED}Erro ao buscar dado especifíco: {Colors.RESET}", e)
+            print(f"{Colors.RED}Error when searching for specific data: {Colors.RESET}", e)
             return None
 
-    def busca_todos_dados_data_especifica(self, start, end):
+    def search_all_data_specific_data(self, start, end):
         try:
 
             cursor = self.connection.cursor()
@@ -194,10 +194,10 @@ class MysqlDatabase:
             else:
                 return None
         except Exception as e:
-            print(f"{Colors.RED}Erro ao busca todos os dados de uma data especifica: {Colors.RESET}", e, "\n")
+            print(f"{Colors.RED}Error when searching all data for a specific date: {Colors.RESET}", e, "\n")
             return None
 
-    def quantidade_dados(self):
+    def quantity_data(self):
         try:
 
             cursor = self.connection.cursor()
@@ -211,12 +211,12 @@ class MysqlDatabase:
             else:
                 return None
         except Exception as e:
-            print(f"{Colors.RED}Erro ao buscar quantidade total: {Colors.RESET}", e)
+            print(f"{Colors.RED}Error when searching total quantity: {Colors.RESET}", e)
             return None
         
     def close(self):
         self.connection.close()
     
     def extract_reports(self, documents):
-        print(f"\n{Colors.GREEN}Gerando a planilha EXCEL!{Colors.RESET}\n")
+        print(f"\n{Colors.GREEN}Generating the EXCEL spreadsheet!{Colors.RESET}\n")
         generate_excel(documents)
