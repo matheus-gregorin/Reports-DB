@@ -213,6 +213,9 @@ class MysqlDatabase:
         except Exception as e:
             print(f"{Colors.RED}Erro ao buscar quantidade total: {Colors.RESET}", e)
             return None
+        
+    def close(self):
+        self.connection.close()
     
     def extract_reports(self, documents):
         print(f"\n{Colors.GREEN}Gerando a planilha EXCEL!{Colors.RESET}\n")
