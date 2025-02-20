@@ -1,4 +1,4 @@
-# 🚀 Gerador de Relatórios em Excel - Terminal App V1
+# 🚀 Reports DB 1.0.0
 
 Automatize a extração de dados e a geração de relatórios no terminal!  
 Este aplicativo, desenvolvido em **Python**, permite gerar **relatórios em Excel (.xlsx)** a partir de **consultas SQL e MongoDB**, otimizando a análise de dados sem a necessidade de manipulação manual.  
