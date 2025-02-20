@@ -55,11 +55,24 @@ def generate_excel(documents, isMongoDB = False):
                 # Adiciona linha a planilha
                 sheet.append(values)
 
+            # Obtém o diretório base do projeto (a raiz, subindo a partir de "src")
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+            # Caminho absoluto para salvar na pasta "docs"
+            docs_dir = os.path.join(base_dir, "docs")
+
+            # Garante que a pasta "docs" existe
+            os.makedirs(docs_dir, exist_ok=True)
+
             name = input(f"{Colors.BLUE}What is the name of the file? {Colors.RESET}\n")
+
+            # Caminho completo para salvar o arquivo
+            file_path = os.path.join(docs_dir, f"{name}.xlsx")
+
             time.sleep(1)
-            workbook.save(f"./docs/{name}.xlsx")
+            workbook.save(file_path)
             workbook.close()
-            print(f"\n{Colors.YELLOW}Finished! Spreadsheet saved in: docs/{name}.xlsx{Colors.RESET}")
+            print(f"\n{Colors.YELLOW}Finished! Spreadsheet saved in: {file_path} {Colors.RESET}")
             return documents
         else:
             print(f"{Colors.GOLD}Empty list, cannot generate spreadsheet.{Colors.RESET}")
